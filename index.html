@@ -1,32 +1,284 @@
-<!DOCTYPE html>
-
-<html>
-
+html<!DOCTYPE html>
+<html lang="th">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
 
-    <title>Portfolio K.Panapa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
 
+<style>
+  :root{
+    --ink:        #15110e;   /* พื้นหลังหน้าเว็บ (เกือบดำอมน้ำตาล) */
+    --card-gray:  #4a4440;   /* พื้นหลังการ์ด สีเทา ตามที่ขอ */
+    --card-gray-dark: #3a3532;
+    --red:        #c1443f;   /* สีตัวอักษร/สีแดง ตามที่ขอ */
+    --red-deep:   #7a1f2b;
+    --ash:        #8a7d70;   /* ตัวอักษรรอง สีเทาอ่อน */
+    --parchment:  #ece2d2;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    height:100%;
+    background: var(--ink);
+    font-family:'Noto Sans Thai', sans-serif;
+  }
+
+  body{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    background-color: var(--ink);
+    background-image:
+      radial-gradient(circle at 50% 35%, rgba(122,31,43,.25), transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23c9a227' stroke-width='1.1' opacity='0.16'%3E%3Cpath d='M20 80c0-16 12-28 28-28 4-14 18-24 32-24 18 0 32 14 32 32 14 4 24 18 24 32 0 18-14 32-32 32-4 14-18 24-32 24-18 0-32-14-32-32-14-4-24-18-24-32z'/%3E%3Ccircle cx='80' cy='80' r='6'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat, repeat;
+    background-size: cover, 160px 160px;
+    overflow:hidden;
+  }
+
+  /* ===== มุมลายกนกทอง-แดง ================================= */
+  .kanok-corner{
+    position:fixed;
+    width: clamp(90px, 14vw, 160px);
+    height: clamp(90px, 14vw, 160px);
+    pointer-events:none;
+    z-index:0;
+    opacity:.55;
+    filter: drop-shadow(0 0 10px rgba(122,31,43,.25));
+  }
+  .kanok-corner svg{ width:100%; height:100%; display:block; }
+  .kanok-tl{ top:0;    left:0;  }
+  .kanok-tr{ top:0;    right:0; transform: scaleX(-1); }
+  .kanok-bl{ bottom:0; left:0;  transform: scaleY(-1); }
+  .kanok-br{ bottom:0; right:0; transform: scale(-1,-1); }
+
+  .card-scene, .caption{ position:relative; z-index:1; }
+
+  /* ===== การ์ดหน้าปก ===================================== */
+  .card-scene{
+    width: min(280px, 70vw);
+    aspect-ratio: 1 / 1;         /* สี่เหลี่ยมมนๆ ตามที่ขอ ปรับสัดส่วนได้ตรงนี้ */
+    perspective: 1400px;
+  }
+
+  .card{
+    position:relative;
+    width:100%; height:100%;
+    cursor:pointer;
+    transform-style: preserve-3d;
+    transition: transform .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .card.is-flipped{ transform: rotateY(180deg); }
+
+  .card-face{
+    position:absolute; inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius: 24px;               /* ความมนของสี่เหลี่ยม ปรับได้ตรงนี้ */
+    backface-visibility: hidden;
+    overflow:hidden;
+  }
+
+  /* หน้า: ข้อความ PORTFOLIO พื้นเทา ตัวอักษรแดง */
+  .card-front{
+    background: var(--card-gray);
+    border: 1px solid rgba(236,226,210,.12);
+    box-shadow: 0 24px 50px -18px rgba(0,0,0,.6);
+    transition: box-shadow .3s ease;
+  }
+  .card-scene:hover .card-front{
+    box-shadow: 0 24px 60px -14px rgba(0,0,0,.65), 0 0 34px -6px rgba(193,68,63,.4);
+  }
+  .card-front span{
+    font-family:'Cinzel', serif;
+    font-weight:600;
+    letter-spacing:.14em;
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    color: var(--red);
+    text-transform:uppercase;
+  }
+
+  /* หลัง: รูปภาพ image1 — เปลี่ยน src ด้านล่างเป็นไฟล์รูปของคุณ */
+  .card-back{
+    transform: rotateY(180deg);
+    background: var(--card-gray-dark);
+    border: 1px solid rgba(236,226,210,.12);
+  }
+  .card-back img{
+    width:100%; height:100%;
+    object-fit: cover;
+    filter: grayscale(.2) contrast(1.05);
+  }
+  .card-back::after{
+    /* กรอบสีแดงบางๆ ทับรูป ให้เข้าธีม */
+    content:"";
+    position:absolute; inset:8px;
+    border: 1px solid rgba(193,68,63,.55);
+    border-radius: 18px;
+    pointer-events:none;
+  }
+  .card-back .next-hint{
+    position:absolute; left:0; right:0; bottom:14px;
+    text-align:center;
+    font-size:.72rem;
+    color: var(--parchment);
+    text-shadow: 0 2px 6px rgba(0,0,0,.8);
+    z-index:2;
+    opacity:0;
+    transition: opacity .4s ease .3s;
+  }
+  .card.is-flipped .card-back .next-hint{ opacity:1; }
+
+  /* ===== คำบรรยายใต้การ์ด: ก้อนป้ายสีเหลือง ตัวอักษรดำ ============ */
+  .caption{
+    display:inline-block;
+    font-size:.85rem;
+    font-weight:600;
+    color: #1a1a1a;                 /* ตัวอักษรสีดำ ตามที่ขอ */
+    letter-spacing:.02em;
+    background: #f2c245;            /* พื้นสีเหลือง ตามที่ขอ */
+    border: 1px solid #caa02f;
+    padding: 8px 18px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,.5);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform: scale(1);   box-shadow: 0 8px 20px -8px rgba(0,0,0,.5); }
+    50%{     transform: scale(1.035); box-shadow: 0 10px 24px -8px rgba(0,0,0,.55); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; }
+    .caption{ animation:none; }
+  }
+</style>
 </head>
+<body>
 
-<body bgcolor="#cc66cc">
-<a href="profile.html" >ประวัติส่วนตัว</a>
-    <a href="education.html" >ประวัติการศึกษา</a>
-    <a href="award.html" >z]ผลงาน</a>
-    <a href="award.html" >z]ผลงาน</a>
-<img src="images/WIN_20260611_14_38_28_Pro.jpg">
+<!-- ลายกนกมุมจอ 4 มุม โทนทอง-แดง (ตกแต่งเฉยๆ ไม่บังการ์ด) -->
+<div class="kanok-corner kanok-tl" aria-hidden="true">
+  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="kanokGrad-tl" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e9c65b"/>
+        <stop offset="100%" stop-color="#7a1f2b"/>
+      </linearGradient>
+    </defs>
+    <g fill="url(#kanokGrad-tl)" stroke="#3a1216" stroke-width="0.6">
+      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+    </g>
+  </svg>
+</div>
+<div class="kanok-corner kanok-tr" aria-hidden="true">
+  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="kanokGrad-tr" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e9c65b"/>
+        <stop offset="100%" stop-color="#7a1f2b"/>
+      </linearGradient>
+    </defs>
+    <g fill="url(#kanokGrad-tr)" stroke="#3a1216" stroke-width="0.6">
+      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+    </g>
+  </svg>
+</div>
+<div class="kanok-corner kanok-bl" aria-hidden="true">
+  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="kanokGrad-bl" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e9c65b"/>
+        <stop offset="100%" stop-color="#7a1f2b"/>
+      </linearGradient>
+    </defs>
+    <g fill="url(#kanokGrad-bl)" stroke="#3a1216" stroke-width="0.6">
+      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+    </g>
+  </svg>
+</div>
+<div class="kanok-corner kanok-br" aria-hidden="true">
+  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="kanokGrad-br" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e9c65b"/>
+        <stop offset="100%" stop-color="#7a1f2b"/>
+      </linearGradient>
+    </defs>
+    <g fill="url(#kanokGrad-br)" stroke="#3a1216" stroke-width="0.6">
+      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
+    </g>
+  </svg>
+</div>
 
-<h1>นางสาวปนภา ทองหล้า</h1>
+<div class="card-scene">
+  <div class="card" id="card" role="button" tabindex="0" aria-label="แตะเพื่อดูรูปและไปหน้าถัดไป">
 
+    <!-- หน้าการ์ด: ข้อความ PORTFOLIO -->
+    <div class="card-face card-front">
+      <span>Portfolio</span>
+    </div>
 
+    <!-- หลังการ์ด: รูปของคุณ — เปลี่ยน src เป็นชื่อไฟล์ที่ต้องการ (profile.jpg) -->
+    <div class="card-face card-back">
+      <img src="assets/image1.jpg" alt="รูปของคุณ">
+      <span class="next-hint">คลิกอีกครั้งเพื่อดำเนินต่อ</span>
+    </div>
 
-<p>นักเรียนชั้นมัธยมศึกษาปีที่6</p>
+  </div>
+</div>
 
+<p class="caption" id="caption">คลิกเพื่อดูข้อมูลเพิ่มเติม</p>
 
+<script>
+  const card = document.getElementById('card');
+  const caption = document.getElementById('caption');
 
-<p>โรงเรียนพานทอง</p>
+  // เปลี่ยน path นี้เป็นหน้าถัดไปที่ต้องการให้ไป (หน้าที่ 2)
+  const NEXT_PAGE = 'page2.html';
 
+  function handleActivate(){
+    if (!card.classList.contains('is-flipped')) {
+      // คลิกครั้งแรก: พลิกการ์ดเผยรูป
+      card.classList.add('is-flipped');
+      caption.textContent = 'คลิกที่การ์ดอีกครั้งเพื่อดำเนินต่อ';
+    } else {
+      // คลิกครั้งที่สอง (ตอนพลิกแล้ว): ไปหน้าถัดไป
+      window.location.href = NEXT_PAGE;
+    }
+  }
 
+  card.addEventListener('click', handleActivate);
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleActivate();
+    }
+  });
+</script>
 
 </body>
-
 </html>
+อย่าลืมสร้างโฟลเดอร์ assets/ แล้วใส่รูปชื่อ image1.jpg ไว้ด้วยนะครับ ไม่งั้นรูปด้านหลังการ์ดจะไม่ขึ้นWant to be notified when Claude responds?
+
