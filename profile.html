@@ -1,284 +1,626 @@
-
-html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
-
+<title>ปนภา ทองหล้า | สมุดข้อมูลนักเรียน</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
-
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chonburi&family=Mitr:wght@400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:        #15110e;   /* พื้นหลังหน้าเว็บ (เกือบดำอมน้ำตาล) */
-    --card-gray:  #4a4440;   /* พื้นหลังการ์ด สีเทา ตามที่ขอ */
-    --card-gray-dark: #3a3532;
-    --red:        #c1443f;   /* สีตัวอักษร/สีแดง ตามที่ขอ */
-    --red-deep:   #7a1f2b;
-    --ash:        #8a7d70;   /* ตัวอักษรรอง สีเทาอ่อน */
-    --parchment:  #ece2d2;
+    --paper:#FBF3E3;
+    --paper-line:#E4D9BF;
+    --ink:#233428;
+    --ink-soft:#4B5C4F;
+    --sage:#6E8F72;
+    --sage-dark:#3F5943;
+    --mustard:#E3A857;
+    --mustard-dark:#9C6B22;
+    --coral:#E2694A;
+    --coral-dark:#9B3E27;
+    --card:#FFFFFF;
+    --transition-theme: background .4s ease, color .4s ease, border-color .4s ease, box-shadow .4s ease;
   }
-
-  *,*::before,*::after{ box-sizing:border-box; }
-
-  html,body{
-    margin:0; padding:0;
-    height:100%;
-    background: var(--ink);
-    font-family:'Noto Sans Thai', sans-serif;
+  html[data-theme="dark"]{
+    --paper:#1B2420;
+    --paper-line:#2B372F;
+    --ink:#EDE7D6;
+    --ink-soft:#B9C3B6;
+    --sage:#8FB794;
+    --sage-dark:#C7E0C9;
+    --mustard:#E3A857;
+    --mustard-dark:#F0C888;
+    --coral:#E2694A;
+    --coral-dark:#F3A78F;
+    --card:#232E28;
   }
-
+  body, .idcard, .tab, .page, .avatar, .photo-slot, .chip{
+    transition: var(--transition-theme);
+  }
+  *{box-sizing:border-box;}
   body{
-    position:relative;
+    margin:0;
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px);
+    background-size: 100% 32px;
+    color:var(--ink);
+    font-family:'Sarabun', sans-serif;
     min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+  .decor{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .decor span{
+    position:absolute;
+    opacity:.35;
+    color:var(--sage);
+    animation:drift 14s ease-in-out infinite;
+  }
+  .decor span:nth-child(1){ top:8%; left:6%; font-size:22px; animation-duration:11s; }
+  .decor span:nth-child(2){ top:18%; left:88%; font-size:16px; color:var(--mustard-dark); animation-duration:16s; animation-delay:1s; }
+  .decor span:nth-child(3){ top:62%; left:4%; font-size:18px; color:var(--coral); animation-duration:13s; animation-delay:2s; }
+  .decor span:nth-child(4){ top:78%; left:92%; font-size:24px; animation-duration:17s; animation-delay:.5s; }
+  .decor span:nth-child(5){ top:40%; left:95%; font-size:14px; color:var(--mustard-dark); animation-duration:12s; animation-delay:3s; }
+  .decor span:nth-child(6){ top:5%; left:45%; font-size:16px; color:var(--coral); animation-duration:15s; animation-delay:1.5s; }
+  @keyframes drift{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-22px) rotate(12deg); }
+  }
+  @keyframes riseIn{
+    from{ opacity:0; transform:translateY(18px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes popIn{
+    from{ opacity:0; transform:translateY(14px) scale(.92); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+    animation:riseIn .5s ease both;
+  }
+  .greeting{
+    font-family:'Mitr', sans-serif;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .greeting b{ color:var(--sage-dark); }
+  .lamp-toggle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:20px;
+    padding:6px 14px 6px 10px;
+    font-family:'Mitr', sans-serif;
+    font-size:12.5px;
+    color:var(--ink);
+    box-shadow:2px 2px 0 rgba(35,52,40,.18);
+    user-select:none;
+  }
+  .lamp-toggle svg{ width:18px; height:18px; transition:transform .3s ease; }
+  .lamp-toggle.on svg{ transform:rotate(-18deg); color:var(--mustard-dark); }
+  .wrap{
+    max-width:960px;
+    margin:0 auto;
+    padding:36px 20px 60px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* Header / ID card */
+  .idcard{
+    position:relative;
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:18px;
+    padding:28px 28px 24px;
+    display:flex;
+    gap:24px;
+    align-items:center;
+    box-shadow:6px 6px 0 var(--sage);
+    margin-bottom:44px;
+    animation:riseIn .6s ease both;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .idcard:hover{
+    transform:translateY(-4px) rotate(-.4deg);
+    box-shadow:8px 10px 0 var(--sage);
+  }
+  .seal{
+    position:absolute;
+    top:-22px;
+    right:22px;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:var(--coral);
+    border:2.5px solid var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    animation:spin 9s linear infinite;
+  }
+  .seal svg{ width:26px; height:26px; animation:spin 9s linear infinite reverse; }
+  @keyframes spin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+  .idcard::before{
+    content:"โรงเรียนพานทอง";
+    position:absolute;
+    top:-14px;
+    left:28px;
+    background:var(--mustard);
+    color:#412402;
+    font-family:'Mitr', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    padding:4px 14px;
+    border-radius:20px;
+    border:2px solid var(--ink);
+  }
+  .avatar{
+    flex:0 0 auto;
+    width:104px;
+    height:104px;
+    border-radius:50%;
+    background:var(--sage);
+    border:3px solid var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .avatar svg{ width:64px; height:64px; }
+  .idcard-text h1{
+    font-family:'Chonburi', cursive;
+    font-size:26px;
+    margin:0 0 6px;
+    color:var(--sage-dark);
+    line-height:1.3;
+  }
+  .idcard-text p{
+    margin:2px 0;
+    font-size:15px;
+    color:var(--ink-soft);
+  }
+  .idcard-text .role{
+    font-family:'Mitr', sans-serif;
+    font-size:13px;
+    color:var(--coral-dark);
+    font-weight:500;
+    letter-spacing:.02em;
+  }
+
+  /* Tabs */
+  .tabs{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:14px;
+    margin-bottom:8px;
+  }
+  .tab{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:14px 14px 4px 4px;
+    padding:16px 8px 12px;
+    text-align:center;
+    cursor:pointer;
+    font-family:'Mitr', sans-serif;
+    font-size:13px;
+    color:var(--ink);
+    transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s ease, background .15s ease;
+    box-shadow:3px 3px 0 rgba(35,52,40,.18);
+    -webkit-tap-highlight-color:transparent;
+    opacity:0;
+    animation:popIn .5s ease both;
+  }
+  .tab:nth-child(1){ animation-delay:.05s; }
+  .tab:nth-child(2){ animation-delay:.1s; }
+  .tab:nth-child(3){ animation-delay:.15s; }
+  .tab:nth-child(4){ animation-delay:.2s; }
+  .tab:nth-child(5){ animation-delay:.25s; }
+  .tab svg{ width:30px; height:30px; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto; transition:transform .3s ease; }
+  .tab:hover{ transform:translateY(-4px) scale(1.03); box-shadow:3px 7px 0 rgba(35,52,40,.22); }
+  .tab:active{ transform:translateY(-1px) scale(.97); }
+  .tab.active{
+    background:var(--sage);
+    color:#fff;
+    box-shadow:3px 3px 0 var(--coral-dark);
+  }
+  .tab.active svg{ stroke:#fff; transform:scale(1.12) rotate(-6deg); }
+
+  /* Page panel */
+  .page{
+    position:relative;
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:4px 18px 18px 18px;
+    margin-top:24px;
+    padding:32px 32px 32px 54px;
+    min-height:260px;
+    box-shadow:6px 6px 0 var(--mustard);
+    perspective:1400px;
+    overflow:hidden;
+  }
+  .page-inner{
+    transform-origin:left center;
+    animation:flipIn .45s cubic-bezier(.2,.7,.3,1) both;
+  }
+  @keyframes flipIn{
+    from{ opacity:0; transform:rotateY(-8deg) translateX(-10px); }
+    to{ opacity:1; transform:rotateY(0) translateX(0); }
+  }
+  .confetti{
+    position:absolute;
+    width:8px;
+    height:8px;
+    top:-10px;
+    border-radius:2px;
+    animation:fall 1.5s ease-in forwards;
+    pointer-events:none;
+  }
+  @keyframes fall{
+    to{ transform:translateY(240px) rotate(360deg); opacity:0; }
+  }
+  .page::before{
+    content:"";
+    position:absolute;
+    left:20px;
+    top:24px;
+    bottom:24px;
+    width:2px;
+    background:repeating-linear-gradient(
+      to bottom, var(--paper-line) 0 10px, transparent 10px 22px
+    );
+  }
+  .page::after{
+    content:"";
+    position:absolute;
+    left:14px;
+    top:0; bottom:0;
+    width:14px;
+    background-image:radial-gradient(circle, var(--paper) 5px, transparent 5.5px);
+    background-size:14px 44px;
+    background-position:0 22px;
+  }
+  .page h2{
+    font-family:'Chonburi', cursive;
+    color:var(--sage-dark);
+    font-size:22px;
+    margin:0 0 4px;
+  }
+  .page .sub{
+    font-family:'Mitr', sans-serif;
+    font-size:12.5px;
+    color:var(--coral-dark);
+    margin:0 0 20px;
+  }
+  .page-body{
+    display:flex;
+    gap:26px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  .photo-slot{
+    flex:0 0 auto;
+    width:150px;
+    height:190px;
+    border:2px dashed var(--sage);
+    border-radius:10px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:22px;
-    background-color: var(--ink);
-    background-image:
-      radial-gradient(circle at 50% 35%, rgba(122,31,43,.25), transparent 60%),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23c9a227' stroke-width='1.1' opacity='0.16'%3E%3Cpath d='M20 80c0-16 12-28 28-28 4-14 18-24 32-24 18 0 32 14 32 32 14 4 24 18 24 32 0 18-14 32-32 32-4 14-18 24-32 24-18 0-32-14-32-32-14-4-24-18-24-32z'/%3E%3Ccircle cx='80' cy='80' r='6'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: no-repeat, repeat;
-    background-size: cover, 160px 160px;
-    overflow:hidden;
-  }
-
-  /* ===== มุมลายกนกทอง-แดง ================================= */
-  .kanok-corner{
-    position:fixed;
-    width: clamp(90px, 14vw, 160px);
-    height: clamp(90px, 14vw, 160px);
-    pointer-events:none;
-    z-index:0;
-    opacity:.55;
-    filter: drop-shadow(0 0 10px rgba(122,31,43,.25));
-  }
-  .kanok-corner svg{ width:100%; height:100%; display:block; }
-  .kanok-tl{ top:0;    left:0;  }
-  .kanok-tr{ top:0;    right:0; transform: scaleX(-1); }
-  .kanok-bl{ bottom:0; left:0;  transform: scaleY(-1); }
-  .kanok-br{ bottom:0; right:0; transform: scale(-1,-1); }
-
-  .card-scene, .caption{ position:relative; z-index:1; }
-
-  /* ===== การ์ดหน้าปก ===================================== */
-  .card-scene{
-    width: min(280px, 70vw);
-    aspect-ratio: 1 / 1;         /* สี่เหลี่ยมมนๆ ตามที่ขอ ปรับสัดส่วนได้ตรงนี้ */
-    perspective: 1400px;
-  }
-
-  .card{
-    position:relative;
-    width:100%; height:100%;
-    cursor:pointer;
-    transform-style: preserve-3d;
-    transition: transform .9s cubic-bezier(.2,.8,.2,1);
-  }
-  .card.is-flipped{ transform: rotateY(180deg); }
-
-  .card-face{
-    position:absolute; inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius: 24px;               /* ความมนของสี่เหลี่ยม ปรับได้ตรงนี้ */
-    backface-visibility: hidden;
-    overflow:hidden;
-  }
-
-  /* หน้า: ข้อความ PORTFOLIO พื้นเทา ตัวอักษรแดง */
-  .card-front{
-    background: var(--card-gray);
-    border: 1px solid rgba(236,226,210,.12);
-    box-shadow: 0 24px 50px -18px rgba(0,0,0,.6);
-    transition: box-shadow .3s ease;
-  }
-  .card-scene:hover .card-front{
-    box-shadow: 0 24px 60px -14px rgba(0,0,0,.65), 0 0 34px -6px rgba(193,68,63,.4);
-  }
-  .card-front span{
-    font-family:'Cinzel', serif;
-    font-weight:600;
-    letter-spacing:.14em;
-    font-size: clamp(1.2rem, 4vw, 1.6rem);
-    color: var(--red);
-    text-transform:uppercase;
-  }
-
-  /* หลัง: รูปภาพ image1 — เปลี่ยน src ด้านล่างเป็นไฟล์รูปของคุณ */
-  .card-back{
-    transform: rotateY(180deg);
-    background: var(--card-gray-dark);
-    border: 1px solid rgba(236,226,210,.12);
-  }
-  .card-back img{
-    width:100%; height:100%;
-    object-fit: cover;
-    filter: grayscale(.2) contrast(1.05);
-  }
-  .card-back::after{
-    /* กรอบสีแดงบางๆ ทับรูป ให้เข้าธีม */
-    content:"";
-    position:absolute; inset:8px;
-    border: 1px solid rgba(193,68,63,.55);
-    border-radius: 18px;
-    pointer-events:none;
-  }
-  .card-back .next-hint{
-    position:absolute; left:0; right:0; bottom:14px;
     text-align:center;
-    font-size:.72rem;
-    color: var(--parchment);
-    text-shadow: 0 2px 6px rgba(0,0,0,.8);
-    z-index:2;
+    color:var(--sage-dark);
+    background:#F6F1E4;
+    padding:10px;
+  }
+  .photo-slot svg{ width:36px; height:36px; margin-bottom:8px; animation:pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:.55; transform:scale(1); } 50%{ opacity:1; transform:scale(1.08); } }
+  .photo-slot span{ font-family:'Mitr', sans-serif; font-size:11px; line-height:1.5; }
+  .info-list{
+    flex:1 1 260px;
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .info-list li{
+    padding:9px 0;
+    border-bottom:1px solid var(--paper-line);
+    display:flex;
+    gap:10px;
+    font-size:15px;
     opacity:0;
-    transition: opacity .4s ease .3s;
+    animation:riseIn .4s ease both;
   }
-  .card.is-flipped .card-back .next-hint{ opacity:1; }
-
-  /* ===== คำบรรยายใต้การ์ด: ก้อนป้ายสีเหลือง ตัวอักษรดำ ============ */
-  .caption{
-    display:inline-block;
-    font-size:.85rem;
-    font-weight:600;
-    color: #1a1a1a;                 /* ตัวอักษรสีดำ ตามที่ขอ */
-    letter-spacing:.02em;
-    background: #f2c245;            /* พื้นสีเหลือง ตามที่ขอ */
-    border: 1px solid #caa02f;
-    padding: 8px 18px;
-    border-radius: 8px;
-    box-shadow: 0 8px 20px -8px rgba(0,0,0,.5);
-    animation: pulse 2.2s ease-in-out infinite;
+  .info-list li:last-child{ border-bottom:none; }
+  .info-list b{
+    font-family:'Mitr', sans-serif;
+    font-weight:500;
+    color:var(--ink-soft);
+    min-width:120px;
+    flex:0 0 auto;
   }
-  @keyframes pulse{
-    0%,100%{ transform: scale(1);   box-shadow: 0 8px 20px -8px rgba(0,0,0,.5); }
-    50%{     transform: scale(1.035); box-shadow: 0 10px 24px -8px rgba(0,0,0,.55); }
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:4px;
   }
-
-  @media (prefers-reduced-motion: reduce){
-    .card{ transition:none; }
-    .caption{ animation:none; }
+  .chip{
+    background:var(--mustard);
+    color:#412402;
+    font-family:'Mitr', sans-serif;
+    font-size:12.5px;
+    padding:6px 13px;
+    border-radius:20px;
+    border:1.5px solid var(--ink);
+    opacity:0;
+    animation:popIn .4s ease both;
+  }
+  .note{
+    margin-top:18px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  footer{
+    text-align:center;
+    margin-top:40px;
+    font-family:'Mitr', sans-serif;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  @media (max-width:640px){
+    .topbar{ flex-direction:column; align-items:flex-start; gap:10px; }
+    .idcard{ flex-direction:column; text-align:center; }
+    .tabs{ grid-template-columns:repeat(3,1fr); }
+    .tab span{ display:block; }
+    .page{ padding:26px 18px 26px 40px; }
+    .page::before, .page::after{ display:none; }
   }
 </style>
 </head>
 <body>
+<div class="decor" aria-hidden="true">
+  <span>✦</span>
+  <span>❀</span>
+  <span>✦</span>
+  <span>❀</span>
+  <span>✦</span>
+  <span>❀</span>
+</div>
+<div class="wrap">
 
-<!-- ลายกนกมุมจอ 4 มุม โทนทอง-แดง (ตกแต่งเฉยๆ ไม่บังการ์ด) -->
-<div class="kanok-corner kanok-tl" aria-hidden="true">
-  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="kanokGrad-tl" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#e9c65b"/>
-        <stop offset="100%" stop-color="#7a1f2b"/>
-      </linearGradient>
-    </defs>
-    <g fill="url(#kanokGrad-tl)" stroke="#3a1216" stroke-width="0.6">
-      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-    </g>
-  </svg>
-</div>
-<div class="kanok-corner kanok-tr" aria-hidden="true">
-  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="kanokGrad-tr" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#e9c65b"/>
-        <stop offset="100%" stop-color="#7a1f2b"/>
-      </linearGradient>
-    </defs>
-    <g fill="url(#kanokGrad-tr)" stroke="#3a1216" stroke-width="0.6">
-      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-    </g>
-  </svg>
-</div>
-<div class="kanok-corner kanok-bl" aria-hidden="true">
-  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="kanokGrad-bl" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#e9c65b"/>
-        <stop offset="100%" stop-color="#7a1f2b"/>
-      </linearGradient>
-    </defs>
-    <g fill="url(#kanokGrad-bl)" stroke="#3a1216" stroke-width="0.6">
-      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-    </g>
-  </svg>
-</div>
-<div class="kanok-corner kanok-br" aria-hidden="true">
-  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="kanokGrad-br" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#e9c65b"/>
-        <stop offset="100%" stop-color="#7a1f2b"/>
-      </linearGradient>
-    </defs>
-    <g fill="url(#kanokGrad-br)" stroke="#3a1216" stroke-width="0.6">
-      <path transform="translate(4,4) scale(2.6)" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(46,4) scale(1.7) rotate(15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(4,46) scale(1.7) rotate(-15 20 20)" opacity="0.9" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-      <path transform="translate(70,70) scale(0.9) rotate(30 20 20)" opacity="0.7" d="M20 2 C8 2 2 12 4 22 C6 32 16 38 26 34 C33 31 35 22 29 17 C25 14 20 16 20 20 C20 24 24 25 26 22 Z"/>
-    </g>
-  </svg>
-</div>
-
-<div class="card-scene">
-  <div class="card" id="card" role="button" tabindex="0" aria-label="แตะเพื่อดูรูปและไปหน้าถัดไป">
-
-    <!-- หน้าการ์ด: ข้อความ PORTFOLIO -->
-    <div class="card-face card-front">
-      <span>Portfolio</span>
+  <div class="topbar">
+    <p class="greeting" id="greeting"></p>
+    <div class="lamp-toggle" id="lampToggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"></path>
+      </svg>
+      <span id="lampLabel">โหมดกลางวัน</span>
     </div>
-
-    <!-- หลังการ์ด: รูปของคุณ — เปลี่ยน src เป็นชื่อไฟล์ที่ต้องการ (profile.jpg) -->
-    <div class="card-face card-back">
-      <img src="assets/image1.jpg" alt="รูปของคุณ">
-      <span class="next-hint">คลิกอีกครั้งเพื่อดำเนินต่อ</span>
-    </div>
-
   </div>
-</div>
 
-<p class="caption" id="caption">คลิกเพื่อดูข้อมูลเพิ่มเติม</p>
+  <div class="idcard">
+    <div class="seal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m12 2 2.9 6 6.6.6-5 4.4 1.5 6.5L12 16l-5.9 3.5L7.6 13l-5-4.4 6.6-.6L12 2Z"></path>
+      </svg>
+    </div>
+    <div class="avatar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+      </svg>
+    </div>
+    <div class="idcard-text">
+      <p class="role">สมุดข้อมูลนักเรียน</p>
+      <h1>นางสาวปนภา ทองหล้า</h1>
+      <p>ชั้นมัธยมศึกษาปีที่ 6/1</p>
+      <p>โรงเรียนพานทอง</p>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#233428" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+      </svg>
+      ข้อมูลส่วนตัว
+    </div>
+    <div class="tab" data-tab="edu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#233428" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3 2 8l10 5 10-5-10-5Z"></path>
+        <path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"></path>
+      </svg>
+      ประวัติการศึกษา
+    </div>
+    <div class="tab" data-tab="skill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#233428" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m12 2 2.9 6 6.6.6-5 4.4 1.5 6.5L12 16l-5.9 3.5L7.6 13l-5-4.4 6.6-.6L12 2Z"></path>
+      </svg>
+      ความสามารถพิเศษ
+    </div>
+    <div class="tab" data-tab="hobby">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#233428" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20s-7-4.4-9.5-8.8C.9 8 2.3 4.5 5.6 3.7c2-.5 3.9.3 5 1.9 1.1-1.6 3-2.4 5-1.9 3.3.8 4.7 4.3 3.1 7.5C19 15.6 12 20 12 20Z"></path>
+      </svg>
+      งานอดิเรก
+    </div>
+    <div class="tab" data-tab="award">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#233428" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"></path>
+        <path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4"></path>
+        <path d="M12 12v4M9 20h6M10 16h4v4h-4v-4Z"></path>
+      </svg>
+      ผลงาน/รางวัล
+    </div>
+  </div>
+
+  <div class="page" id="page"></div>
+
+  <footer>ทำเป็นเว็บไซต์เดียว (index.html) — เปิดใช้งานได้ทันทีบน GitHub Pages</footer>
+</div>
 
 <script>
-  const card = document.getElementById('card');
-  const caption = document.getElementById('caption');
-
-  // เปลี่ยน path นี้เป็นหน้าถัดไปที่ต้องการให้ไป (หน้าที่ 2)
-  const NEXT_PAGE = 'page2.html';
-
-  function handleActivate(){
-    if (!card.classList.contains('is-flipped')) {
-      // คลิกครั้งแรก: พลิกการ์ดเผยรูป
-      card.classList.add('is-flipped');
-      caption.textContent = 'คลิกที่การ์ดอีกครั้งเพื่อดำเนินต่อ';
-    } else {
-      // คลิกครั้งที่สอง (ตอนพลิกแล้ว): ไปหน้าถัดไป
-      window.location.href = NEXT_PAGE;
-    }
+const data = {
+  profile: {
+    title: "ข้อมูลส่วนตัว",
+    sub: "PERSONAL INFO",
+    photoText: "ใส่รูปภาพของนักเรียนตรงนี้",
+    items: [
+      ["ชื่อ-นามสกุล", "นางสาวปนภา ทองหล้า"],
+      ["ชื่อเล่น", "ระบุชื่อเล่น"],
+      ["วันเกิด", "ระบุวัน/เดือน/ปีเกิด"],
+      ["ชั้นเรียน", "มัธยมศึกษาปีที่ 6/1"],
+      ["โรงเรียน", "โรงเรียนพานทอง"],
+      ["คติประจำใจ", "ระบุคติประจำใจของนักเรียน"]
+    ]
+  },
+  edu: {
+    title: "ประวัติการศึกษา",
+    sub: "EDUCATION HISTORY",
+    photoText: "ใส่รูปภาพโรงเรียน หรือรูปกิจกรรมการเรียน",
+    items: [
+      ["ระดับอนุบาล", "ระบุชื่อโรงเรียน"],
+      ["ระดับประถมศึกษา", "ระบุชื่อโรงเรียน"],
+      ["ระดับมัธยมต้น", "ระบุชื่อโรงเรียน"],
+      ["ระดับมัธยมปลาย", "โรงเรียนพานทอง (ม.6/1 - ปัจจุบัน)"],
+      ["แผนการเรียน", "ระบุแผนการเรียน เช่น วิทย์-คณิต"]
+    ]
+  },
+  skill: {
+    title: "ความสามารถพิเศษ",
+    sub: "SPECIAL SKILLS",
+    photoText: "ใส่รูปภาพผลงานหรือกิจกรรมที่แสดงความสามารถ",
+    chips: ["ระบุทักษะ 1", "ระบุทักษะ 2", "ระบุทักษะ 3", "ระบุทักษะ 4"],
+    note: "แก้ไขรายการด้านบนให้ตรงกับความสามารถพิเศษของนักเรียน เช่น ร้องเพลง วาดภาพ กีฬา ภาษา ฯลฯ"
+  },
+  hobby: {
+    title: "งานอดิเรก",
+    sub: "HOBBIES",
+    photoText: "ใส่รูปภาพกิจกรรมยามว่างที่ชื่นชอบ",
+    chips: ["ระบุงานอดิเรก 1", "ระบุงานอดิเรก 2", "ระบุงานอดิเรก 3"],
+    note: "แก้ไขรายการด้านบนให้ตรงกับงานอดิเรกจริงของนักเรียน"
+  },
+  award: {
+    title: "ผลงานและรางวัล",
+    sub: "ACHIEVEMENTS",
+    photoText: "ใส่รูปภาพเกียรติบัตรหรือผลงาน",
+    items: [
+      ["รางวัล/เกียรติบัตร", "ระบุชื่อรางวัลที่เคยได้รับ"],
+      ["ปีที่ได้รับ", "ระบุปี พ.ศ."],
+      ["หน่วยงานที่มอบ", "ระบุหน่วยงาน"],
+      ["ผลงานเด่นอื่น ๆ", "ระบุผลงานหรือกิจกรรมที่ภาคภูมิใจ"]
+    ]
   }
+};
 
-  card.addEventListener('click', handleActivate);
-  card.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleActivate();
-    }
+function iconSvg(){
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+    <circle cx="8.5" cy="10.5" r="1.7"></circle>
+    <path d="m21 16-5-4.5-4 3.5-2.5-2L3 17"></path>
+  </svg>`;
+}
+
+function burstConfetti(container){
+  const colors = ['#6E8F72','#E3A857','#E2694A','#3F5943'];
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti';
+    p.style.left = (Math.random()*90+2) + '%';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDelay = (Math.random()*.3) + 's';
+    p.style.animationDuration = (1.1 + Math.random()*.6) + 's';
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 2000);
+  }
+}
+
+function render(key){
+  const d = data[key];
+  const page = document.getElementById('page');
+  let bodyHtml = '';
+  if(d.items){
+    bodyHtml = `<ul class="info-list">` + d.items.map(([k,v],i) => `<li style="animation-delay:${.08*i}s"><b>${k}</b><span>${v}</span></li>`).join('') + `</ul>`;
+  } else if(d.chips){
+    bodyHtml = `<div><div class="chips">` + d.chips.map((c,i) => `<span class="chip" style="animation-delay:${.08*i}s">${c}</span>`).join('') + `</div>
+    <p class="note">${d.note}</p></div>`;
+  }
+  page.innerHTML = `
+    <div class="page-inner">
+      <h2>${d.title}</h2>
+      <p class="sub">${d.sub}</p>
+      <div class="page-body">
+        <div class="photo-slot">
+          ${iconSvg()}
+          <span>${d.photoText}</span>
+        </div>
+        ${bodyHtml}
+      </div>
+    </div>
+  `;
+  if(key === 'award'){
+    burstConfetti(page);
+  }
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    render(tab.dataset.tab);
   });
-</script>
+});
 
+render('profile');
+
+const hour = new Date().getHours();
+let greetWord = 'สวัสดีตอนเช้า';
+if(hour >= 11 && hour < 15) greetWord = 'สวัสดีตอนเที่ยง';
+else if(hour >= 15 && hour < 18) greetWord = 'สวัสดีตอนบ่าย';
+else if(hour >= 18 || hour < 5) greetWord = 'สวัสดีตอนเย็น';
+document.getElementById('greeting').innerHTML = `${greetWord} ยินดีต้อนรับสู่ <b>สมุดข้อมูลนักเรียน</b> ของปนภา`;
+
+const lampToggle = document.getElementById('lampToggle');
+const lampLabel = document.getElementById('lampLabel');
+lampToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  if(isDark){
+    document.documentElement.removeAttribute('data-theme');
+    lampLabel.textContent = 'โหมดกลางวัน';
+    lampToggle.classList.remove('on');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    lampLabel.textContent = 'โหมดกลางคืน';
+    lampToggle.classList.add('on');
+  }
+});
+
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - .5) * 16;
+  const y = (e.clientY / window.innerHeight - .5) * 16;
+  document.querySelectorAll('.decor span').forEach((s, i) => {
+    const depth = (i % 3 + 1) / 3;
+    s.style.marginLeft = `${x * depth}px`;
+    s.style.marginTop = `${y * depth}px`;
+  });
+});
+</script>
 </body>
 </html>
-อย่าลืมสร้างโฟลเดอร์ assets/ แล้วใส่รูปชื่อ image1.jpg ไว้ด้วยนะครับ ไม่งั้นรูปด้านหลังการ์ดจะไม่ขึ้นWant to be notified when Claude responds?
