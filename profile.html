@@ -1,9 +1,12 @@
+นี่คือโค้ดทั้งหมดเวอร์ชันล่าสุดครับ คัดลอกวางแทนไฟล์เดิมได้เลย:
+
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ปนภา ทองหล้า </title>
+<title>ปนภา ทองหล้า | ข้อมูลนักเรียน</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chonburi&family=Mitr:wght@400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -329,6 +332,85 @@
   .photo-slot svg{ width:36px; height:36px; margin-bottom:8px; animation:pulse 2.4s ease-in-out infinite; }
   @keyframes pulse{ 0%,100%{ opacity:.55; transform:scale(1); } 50%{ opacity:1; transform:scale(1.08); } }
   .photo-slot span{ font-family:'Mitr', sans-serif; font-size:11px; line-height:1.5; }
+  .flip-card{
+    flex:0 0 auto;
+    width:150px;
+    height:190px;
+    perspective:1000px;
+    cursor:pointer;
+  }
+  .flip-card-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:transform .6s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+    border-radius:10px;
+    box-shadow:2px 2px 0 rgba(35,52,40,.15);
+  }
+  .flip-card.flipped .flip-card-inner{ transform:rotateY(180deg); }
+  .flip-face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:10px;
+    border:2px solid var(--ink);
+    overflow:hidden;
+  }
+  .flip-face img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .flip-face.back{ transform:rotateY(180deg); }
+  .flip-hint{
+    position:absolute;
+    bottom:6px;
+    right:6px;
+    background:rgba(35,52,40,.65);
+    color:#fff;
+    font-family:'Mitr', sans-serif;
+    font-size:10px;
+    padding:3px 8px;
+    border-radius:10px;
+  }
+  .edu-rows{
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    width:100%;
+    flex:1 1 100%;
+  }
+  .edu-row{
+    display:flex;
+    gap:22px;
+    align-items:center;
+    flex-wrap:wrap;
+    padding-bottom:22px;
+    border-bottom:1px dashed var(--paper-line);
+    opacity:0;
+    animation:riseIn .45s ease both;
+  }
+  .edu-row:last-child{ border-bottom:none; padding-bottom:0; }
+  .edu-info{ flex:1 1 200px; }
+  .edu-label{
+    font-family:'Mitr', sans-serif;
+    font-size:12px;
+    color:var(--coral-dark);
+    margin:0 0 6px;
+    letter-spacing:.02em;
+  }
+  .edu-school{
+    font-size:17px;
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .edu-plan{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .txt-blue{ color:#2F5DA8; }
+  .txt-pink{ color:#E0609C; }
+  .txt-red{ color:#D8432E; }
+  .txt-black{ color:var(--ink); }
+  .flip-card.small{ width:120px; height:150px; }
   .info-list{
     flex:1 1 260px;
     list-style:none;
@@ -421,13 +503,10 @@
       </svg>
     </div>
     <div class="avatar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="8" r="4"></circle>
-        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
-      </svg>
+      <img src="images/IMG_8017.jpeg" alt="รูปโปรไฟล์ ปนภา ทองหล้า" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
     </div>
     <div class="idcard-text">
-      <p class="role">สมุดข้อมูลนักเรียน</p>
+      <p class="role">ข้อมูลนักเรียน</p>
       <h1>นางสาวปนภา ทองหล้า</h1>
       <p>ชั้นมัธยมศึกษาปีที่ 6/1</p>
       <p>โรงเรียนพานทอง</p>
@@ -484,23 +563,43 @@ const data = {
     photoText: "ใส่รูปภาพของนักเรียนตรงนี้",
     items: [
       ["ชื่อ-นามสกุล", "นางสาวปนภา ทองหล้า"],
-      ["ชื่อเล่น", "ระบุชื่อเล่น"],
-      ["วันเกิด", "ระบุวัน/เดือน/ปีเกิด"],
+      ["ชื่อเล่น", "จีอา"],
+      ["วันเกิด", "21 พฤศจิกายน พ.ศ. 2551"],
       ["ชั้นเรียน", "มัธยมศึกษาปีที่ 6/1"],
       ["โรงเรียน", "โรงเรียนพานทอง"],
-      ["คติประจำใจ", "ระบุคติประจำใจของนักเรียน"]
+      ["วิชาที่ชอบ", "ภาษาไทย"]
     ]
   },
   edu: {
     title: "ประวัติการศึกษา",
     sub: "EDUCATION HISTORY",
-    photoText: "ใส่รูปภาพโรงเรียน หรือรูปกิจกรรมการเรียน",
-    items: [
-      ["ระดับอนุบาล", "ระบุชื่อโรงเรียน"],
-      ["ระดับประถมศึกษา", "ระบุชื่อโรงเรียน"],
-      ["ระดับมัธยมต้น", "ระบุชื่อโรงเรียน"],
-      ["ระดับมัธยมปลาย", "โรงเรียนพานทอง (ม.6/1 - ปัจจุบัน)"],
-      ["แผนการเรียน", "ระบุแผนการเรียน เช่น วิทย์-คณิต"]
+    levels: [
+      {
+        label: "อนุบาล - ประถมศึกษา",
+        schoolPrefix: "โรงเรียน",
+        prefixColor: "blue",
+        schoolName: "อนุบาลวัดอู่ตะเภา",
+        schoolColor: "pink",
+        imgFlip: ["images/IMG_1678.jpeg", "images/IMG_0478.jpeg"]
+      },
+      {
+        label: "มัธยมศึกษาตอนต้น",
+        schoolPrefix: "โรงเรียน",
+        prefixColor: "black",
+        schoolName: "พานทอง",
+        schoolColor: "red",
+        plan: "วิทยาศาสตร์-คณิตศาสตร์",
+        imgFlip: ["images/IMG_1680.jpeg", "images/IMG_1681.jpeg"]
+      },
+      {
+        label: "มัธยมศึกษาตอนปลาย",
+        schoolPrefix: "โรงเรียน",
+        prefixColor: "black",
+        schoolName: "พานทอง",
+        schoolColor: "red",
+        plan: "วิทยาศาสตร์-คณิตศาสตร์",
+        imgFlip: ["images/IMG_1680.jpeg", "images/IMG_3467.jpeg"]
+      }
     ]
   },
   skill: {
@@ -556,21 +655,54 @@ function render(key){
   const d = data[key];
   const page = document.getElementById('page');
   let bodyHtml = '';
-  if(d.items){
+
+  if(d.levels){
+    bodyHtml = `<div class="edu-rows">` + d.levels.map((lv,i) => `
+      <div class="edu-row" style="animation-delay:${.1*i}s">
+        <div class="flip-card small" data-flip>
+          <div class="flip-card-inner">
+            <div class="flip-face front"><img src="${lv.imgFlip[0]}" alt="${lv.label}"></div>
+            <div class="flip-face back"><img src="${lv.imgFlip[1]}" alt="${lv.label}"></div>
+          </div>
+          <span class="flip-hint">แตะเพื่อพลิกรูป</span>
+        </div>
+        <div class="edu-info">
+          <p class="edu-label">${lv.label}</p>
+          <p class="edu-school"><span class="txt-${lv.prefixColor}">${lv.schoolPrefix}</span> <span class="txt-${lv.schoolColor}">${lv.schoolName}</span></p>
+          ${lv.plan ? `<p class="edu-plan">แผนการเรียน: ${lv.plan}</p>` : ''}
+        </div>
+      </div>
+    `).join('') + `</div>`;
+  } else if(d.items){
     bodyHtml = `<ul class="info-list">` + d.items.map(([k,v],i) => `<li style="animation-delay:${.08*i}s"><b>${k}</b><span>${v}</span></li>`).join('') + `</ul>`;
   } else if(d.chips){
     bodyHtml = `<div><div class="chips">` + d.chips.map((c,i) => `<span class="chip" style="animation-delay:${.08*i}s">${c}</span>`).join('') + `</div>
     <p class="note">${d.note}</p></div>`;
   }
+
+  let photoHtml = '';
+  if(d.imgFlip){
+    photoHtml = `
+      <div class="flip-card" data-flip>
+        <div class="flip-card-inner">
+          <div class="flip-face front"><img src="${d.imgFlip[0]}" alt="${d.title}"></div>
+          <div class="flip-face back"><img src="${d.imgFlip[1]}" alt="${d.title}"></div>
+        </div>
+        <span class="flip-hint">แตะเพื่อพลิกรูป</span>
+      </div>
+    `;
+  } else if(d.img){
+    photoHtml = `<div class="photo-slot"><img src="${d.img}" alt="${d.title}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"></div>`;
+  } else if(!d.levels){
+    photoHtml = `<div class="photo-slot">${iconSvg()}<span>${d.photoText}</span></div>`;
+  }
+
   page.innerHTML = `
     <div class="page-inner">
       <h2>${d.title}</h2>
       <p class="sub">${d.sub}</p>
       <div class="page-body">
-        <div class="photo-slot">
-          ${iconSvg()}
-          <span>${d.photoText}</span>
-        </div>
+        ${photoHtml}
         ${bodyHtml}
       </div>
     </div>
@@ -578,6 +710,9 @@ function render(key){
   if(key === 'award'){
     burstConfetti(page);
   }
+  page.querySelectorAll('[data-flip]').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+  });
 }
 
 document.querySelectorAll('.tab').forEach(tab => {
@@ -595,7 +730,7 @@ let greetWord = 'สวัสดีตอนเช้า';
 if(hour >= 11 && hour < 15) greetWord = 'สวัสดีตอนเที่ยง';
 else if(hour >= 15 && hour < 18) greetWord = 'สวัสดีตอนบ่าย';
 else if(hour >= 18 || hour < 5) greetWord = 'สวัสดีตอนเย็น';
-document.getElementById('greeting').innerHTML = `${greetWord} ยินดีต้อนรับสู่ <b>สมุดข้อมูลนักเรียน</b> ของปนภา`;
+document.getElementById('greeting').innerHTML = `${greetWord} ยินดีต้อนรับสู่ <b>ข้อมูลนักเรียน</b> ของปนภา`;
 
 const lampToggle = document.getElementById('lampToggle');
 const lampLabel = document.getElementById('lampLabel');
@@ -624,3 +759,4 @@ document.addEventListener('mousemove', (e) => {
 </script>
 </body>
 </html>
+```
