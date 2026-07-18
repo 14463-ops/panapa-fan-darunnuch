@@ -1,4 +1,4 @@
-นี่คือโค้ดทั้งหมดเวอร์ชันล่าสุดครับ คัดลอกวางแทนไฟล์เดิมได้เลย:
+เข้า
 
 ```html
 <!DOCTYPE html>
@@ -23,6 +23,12 @@
     --coral:#E2694A;
     --coral-dark:#9B3E27;
     --card:#FFFFFF;
+    --violet:#8073B8;
+    --violet-dark:#5B4F94;
+    --sage-tint:#EAF3EC;
+    --mustard-tint:#FBF0DC;
+    --coral-tint:#FBE8E2;
+    --violet-tint:#EEEBF8;
     --transition-theme: background .4s ease, color .4s ease, border-color .4s ease, box-shadow .4s ease;
   }
   html[data-theme="dark"]{
@@ -37,6 +43,12 @@
     --coral:#E2694A;
     --coral-dark:#F3A78F;
     --card:#232E28;
+    --violet:#9A8FCF;
+    --violet-dark:#C6BEE8;
+    --sage-tint:#26332A;
+    --mustard-tint:#3A2F1C;
+    --coral-tint:#3B2620;
+    --violet-tint:#2E2A40;
   }
   body, .idcard, .tab, .page, .avatar, .photo-slot, .chip{
     transition: var(--transition-theme);
@@ -275,6 +287,18 @@
   @keyframes fall{
     to{ transform:translateY(240px) rotate(360deg); opacity:0; }
   }
+  .plane-confetti{
+    position:absolute;
+    top:-24px;
+    font-size:20px;
+    line-height:1;
+    animation:planeFall 1.8s ease-in forwards;
+    pointer-events:none;
+  }
+  @keyframes planeFall{
+    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(280px) rotate(25deg); opacity:0; }
+  }
   .page::before{
     content:"";
     position:absolute;
@@ -411,6 +435,221 @@
   .txt-red{ color:#D8432E; }
   .txt-black{ color:var(--ink); }
   .flip-card.small{ width:120px; height:150px; }
+  .skill-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:18px;
+    width:100%;
+    flex:1 1 100%;
+  }
+  .skill-card{
+    position:relative;
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:16px;
+    padding:22px 14px 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:12px;
+    opacity:0;
+    animation:popIn .5s ease both;
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
+    box-shadow:3px 3px 0 rgba(35,52,40,.15);
+    overflow:hidden;
+  }
+  .skill-card::before{
+    content:"";
+    position:absolute;
+    top:-30px; right:-30px;
+    width:70px; height:70px;
+    border-radius:50%;
+    background:var(--skill-color);
+    opacity:.15;
+  }
+  .skill-card:hover{
+    transform:translateY(-6px) rotate(-1.2deg);
+    box-shadow:4px 9px 0 rgba(35,52,40,.2);
+  }
+  .skill-card:nth-child(even):hover{ transform:translateY(-6px) rotate(1.2deg); }
+  .skill-icon{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:var(--skill-color);
+    border:2px solid var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .skill-icon svg{ width:28px; height:28px; }
+  .skill-num{
+    position:absolute;
+    top:10px; left:12px;
+    font-family:'Chonburi', cursive;
+    font-size:13px;
+    color:var(--skill-color);
+    opacity:.7;
+  }
+  .skill-label{
+    font-family:'Mitr', sans-serif;
+    font-weight:500;
+    font-size:14.5px;
+    color:var(--ink);
+    margin:0;
+    line-height:1.4;
+  }
+  @media (max-width:520px){
+    .skill-grid{ grid-template-columns:1fr; }
+  }
+  .hobby-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+    width:100%;
+    flex:1 1 100%;
+  }
+  .hobby-card{
+    position:relative;
+    background:linear-gradient(155deg, var(--accent-tint) 0%, var(--card) 68%);
+    border:2px solid var(--ink);
+    border-radius:14px;
+    padding:10px 10px 16px;
+    text-align:center;
+    opacity:0;
+    animation:popIn .5s ease both;
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
+    box-shadow:3px 3px 0 rgba(35,52,40,.15);
+    overflow:hidden;
+  }
+  .hobby-card::before{
+    content:"";
+    position:absolute;
+    top:-26px; left:-26px;
+    width:64px; height:64px;
+    border-radius:50%;
+    background:var(--accent);
+    opacity:.25;
+  }
+  .hobby-card:hover{ transform:translateY(-6px) rotate(-1deg); box-shadow:4px 8px 0 rgba(35,52,40,.2); }
+  .hobby-photo{
+    width:100%;
+    aspect-ratio:4/5;
+    border-radius:10px;
+    overflow:hidden;
+    border:2px solid var(--ink);
+    margin-bottom:12px;
+    position:relative;
+    z-index:1;
+  }
+  .hobby-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .hobby-badge{
+    position:relative;
+    z-index:1;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    background:var(--accent);
+    color:#fff;
+    border:2px solid var(--ink);
+    border-radius:20px;
+    padding:6px 14px 6px 6px;
+    font-family:'Mitr', sans-serif;
+    font-weight:600;
+    font-size:12.5px;
+    box-shadow:2px 2px 0 rgba(35,52,40,.18);
+  }
+  .hobby-badge-icon{
+    width:24px;
+    height:24px;
+    background:rgba(255,255,255,.22);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .hobby-badge-icon svg{ width:14px; height:14px; }
+  .hobby-stat{
+    position:relative;
+    z-index:1;
+    font-family:'Mitr', sans-serif;
+    font-size:11.5px;
+    color:var(--coral-dark);
+    margin:8px 0 0;
+  }
+  @media (max-width:640px){
+    .hobby-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:420px){
+    .hobby-grid{ grid-template-columns:1fr; }
+  }
+  .award-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:18px;
+    width:100%;
+    flex:1 1 100%;
+  }
+  .award-card{
+    position:relative;
+    background:linear-gradient(155deg, var(--accent-tint) 0%, var(--card) 68%);
+    border:2px solid var(--ink);
+    border-radius:14px;
+    padding:12px 12px 16px;
+    text-align:center;
+    opacity:0;
+    animation:popIn .5s ease both;
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
+    box-shadow:3px 3px 0 rgba(35,52,40,.15);
+    overflow:hidden;
+  }
+  .award-card::before{
+    content:"";
+    position:absolute;
+    top:-26px; right:-26px;
+    width:64px; height:64px;
+    border-radius:50%;
+    background:var(--accent);
+    opacity:.25;
+  }
+  .award-card:hover{ transform:translateY(-6px) rotate(-1deg); box-shadow:4px 8px 0 rgba(35,52,40,.2); }
+  .award-photo{
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:10px;
+    overflow:hidden;
+    border:2px solid var(--ink);
+    margin-bottom:10px;
+    position:relative;
+    z-index:1;
+  }
+  .award-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .award-title{
+    position:relative;
+    z-index:1;
+    font-family:'Mitr', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    color:var(--ink);
+    margin:0;
+    line-height:1.4;
+  }
+  .award-desc{
+    position:relative;
+    z-index:1;
+    font-family:'Sarabun', sans-serif;
+    font-size:12.5px;
+    color:#2F5DA8;
+    margin:7px 0 0;
+    line-height:1.5;
+  }
+  html[data-theme="dark"] .award-desc{ color:#7FA8E8; }
+  @media (max-width:640px){
+    .award-grid{ grid-template-columns:1fr; }
+  }
   .info-list{
     flex:1 1 260px;
     list-style:none;
@@ -503,7 +742,7 @@
       </svg>
     </div>
     <div class="avatar">
-      <img src="images/IMG_8017.jpeg" alt="รูปโปรไฟล์ ปนภา ทองหล้า" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+      <img src="images/IMG_0480.jpeg" alt="รูปโปรไฟล์ ปนภา ทองหล้า" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
     </div>
     <div class="idcard-text">
       <p class="role">ข้อมูลนักเรียน</p>
@@ -560,6 +799,7 @@ const data = {
   profile: {
     title: "ข้อมูลส่วนตัว",
     sub: "PERSONAL INFO",
+    img: "images/IMG_9270.jpeg",
     photoText: "ใส่รูปภาพของนักเรียนตรงนี้",
     items: [
       ["ชื่อ-นามสกุล", "นางสาวปนภา ทองหล้า"],
@@ -605,26 +845,49 @@ const data = {
   skill: {
     title: "ความสามารถพิเศษ",
     sub: "SPECIAL SKILLS",
-    photoText: "ใส่รูปภาพผลงานหรือกิจกรรมที่แสดงความสามารถ",
-    chips: ["ระบุทักษะ 1", "ระบุทักษะ 2", "ระบุทักษะ 3", "ระบุทักษะ 4"],
-    note: "แก้ไขรายการด้านบนให้ตรงกับความสามารถพิเศษของนักเรียน เช่น ร้องเพลง วาดภาพ กีฬา ภาษา ฯลฯ"
+    skills: [
+      { label: "แบดมินตัน", icon: "badminton", color: "sage" },
+      { label: "จินตคณิต", icon: "abacus", color: "mustard" },
+      { label: "ตัดต่อคลิปวิดีโอ", icon: "video", color: "coral" },
+      { label: "สื่อสารภาษาเกาหลีได้เบื้องต้น", icon: "korean", color: "violet" }
+    ]
   },
   hobby: {
     title: "งานอดิเรก",
     sub: "HOBBIES",
-    photoText: "ใส่รูปภาพกิจกรรมยามว่างที่ชื่นชอบ",
-    chips: ["ระบุงานอดิเรก 1", "ระบุงานอดิเรก 2", "ระบุงานอดิเรก 3"],
-    note: "แก้ไขรายการด้านบนให้ตรงกับงานอดิเรกจริงของนักเรียน"
+    hobbies: [
+      { img: "images/IMG_1685.png", label: "แต่งนิยาย", stat: "ยอดเข้าอ่านรวม 4.4M", icon: "book", color: "coral" },
+      { img: "images/IMG_1687.jpeg", label: "ศึกษาเกี่ยวกับเครื่องบิน", icon: "plane", color: "sage" },
+      { img: "images/IMG_1688.jpeg", label: "สะสมโมเดลเครื่องบิน", icon: "model", color: "mustard" }
+    ]
   },
   award: {
     title: "ผลงานและรางวัล",
     sub: "ACHIEVEMENTS",
-    photoText: "ใส่รูปภาพเกียรติบัตรหรือผลงาน",
-    items: [
-      ["รางวัล/เกียรติบัตร", "ระบุชื่อรางวัลที่เคยได้รับ"],
-      ["ปีที่ได้รับ", "ระบุปี พ.ศ."],
-      ["หน่วยงานที่มอบ", "ระบุหน่วยงาน"],
-      ["ผลงานเด่นอื่น ๆ", "ระบุผลงานหรือกิจกรรมที่ภาคภูมิใจ"]
+    achievements: [
+      {
+        img: "images/IMG_1689.jpeg",
+        label: "รางวัลชนะเลิศ The Best TikToker",
+        desc: "ได้ฝึกความมั่นใจในการพูดและนำเสนอต่อหน้ากล้อง รวมถึงทักษะการคิดสร้างสรรค์คอนเทนต์ให้น่าสนใจ",
+        color: "coral"
+      },
+      {
+        img: "images/IMG_1692.jpeg",
+        label: "เข้าร่วมฝึกประสบการณ์วิชาชีพด้านการแพทย์ ณ โรงพยาบาลพานทอง",
+        desc: "ได้เรียนรู้การทำงานร่วมกับผู้อื่นในสถานพยาบาลจริง และเข้าใจการดูแลผู้ป่วยเบื้องต้น",
+        color: "sage"
+      },
+      {
+        img: "images/IMG_1690.jpeg",
+        label: "การแข่งขันตัดต่อภาพยนตร์ รางวัลระดับเหรียญทองแดง",
+        desc: "ได้ฝึกทักษะการตัดต่อวิดีโอและการเล่าเรื่องผ่านภาพภายใต้เวลาจำกัด",
+        color: "mustard"
+      },
+      {
+        img: "images/IMG_1691.jpeg",
+        label: "รางวัลดาวจรัสแสง ประจำปีการศึกษา 2568",
+        color: "violet"
+      }
     ]
   }
 };
@@ -637,6 +900,49 @@ function iconSvg(){
   </svg>`;
 }
 
+const skillIcons = {
+  badminton: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="5.2"></circle>
+    <path d="M9 3.8v10.4M3.8 9h10.4M5.6 5.6l6.8 6.8M12.4 5.6l-6.8 6.8"></path>
+    <path d="M13 13l7 7M17.5 17.5l1.8 1.8a1.3 1.3 0 0 1-1.8 1.8l-1.8-1.8"></path>
+  </svg>`,
+  abacus: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="1.5"></rect>
+    <path d="M3.5 9.5h17M3.5 15h17"></path>
+    <circle cx="8" cy="6.5" r="1"></circle>
+    <circle cx="13" cy="6.5" r="1"></circle>
+    <circle cx="10" cy="12.2" r="1"></circle>
+    <circle cx="16" cy="12.2" r="1"></circle>
+    <circle cx="7" cy="17.7" r="1"></circle>
+    <circle cx="15" cy="17.7" r="1"></circle>
+  </svg>`,
+  video: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9.5 6 6h3L6.5 9.5Z"></path>
+    <path d="M8.5 9.5 11.5 6h3L12 9.5Z"></path>
+    <path d="M14 9.5 17 6h3l-2.5 3.5Z"></path>
+    <rect x="3" y="9.5" width="18" height="10.5" rx="1.5"></rect>
+    <path d="m10 13.2 4 2.3-4 2.3v-4.6Z" fill="#fff" stroke="none"></path>
+  </svg>`,
+  korean: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 5.5h16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H9l-4 3.5V16H4a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1Z"></path>
+    <text x="12" y="13.5" font-size="7" font-family="sans-serif" text-anchor="middle" fill="#fff" stroke="none">가</text>
+  </svg>`
+};
+
+const hobbyIcons = {
+  book: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 6.5c-1.5-1.3-3.6-2-6.5-2v11c2.9 0 5 .7 6.5 2 1.5-1.3 3.6-2 6.5-2v-11c-2.9 0-5 .7-6.5 2Z"></path>
+    <path d="M12 6.5v11"></path>
+  </svg>`,
+  plane: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 13.5 21 6l-7.5 18-2-8-8.5-2.5Z"></path>
+  </svg>`,
+  model: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3v6M4 11h16l-2 2.5H6L4 11Z"></path>
+    <path d="M10 13.5 8 20h1.5l2.5-4 2.5 4H16l-2-6.5"></path>
+  </svg>`
+};
+
 function burstConfetti(container){
   const colors = ['#6E8F72','#E3A857','#E2694A','#3F5943'];
   for(let i=0;i<18;i++){
@@ -648,6 +954,20 @@ function burstConfetti(container){
     p.style.animationDuration = (1.1 + Math.random()*.6) + 's';
     container.appendChild(p);
     setTimeout(() => p.remove(), 2000);
+  }
+}
+
+function burstPlanes(container){
+  for(let i=0;i<12;i++){
+    const p = document.createElement('div');
+    p.className = 'plane-confetti';
+    p.textContent = '✈️';
+    p.style.left = (Math.random()*88+2) + '%';
+    p.style.animationDelay = (Math.random()*.5) + 's';
+    p.style.animationDuration = (1.4 + Math.random()*.8) + 's';
+    p.style.fontSize = (16 + Math.random()*10) + 'px';
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 2600);
   }
 }
 
@@ -673,6 +993,33 @@ function render(key){
         </div>
       </div>
     `).join('') + `</div>`;
+  } else if(d.skills){
+    bodyHtml = `<div class="skill-grid">` + d.skills.map((s,i) => `
+      <div class="skill-card" style="--skill-color:var(--${s.color}); animation-delay:${.1*i}s">
+        <span class="skill-num">0${i+1}</span>
+        <div class="skill-icon">${skillIcons[s.icon]}</div>
+        <p class="skill-label">${s.label}</p>
+      </div>
+    `).join('') + `</div>`;
+  } else if(d.hobbies){
+    bodyHtml = `<div class="hobby-grid">` + d.hobbies.map((h,i) => `
+      <div class="hobby-card" style="--accent:var(--${h.color}); --accent-tint:var(--${h.color}-tint); animation-delay:${.1*i}s">
+        <div class="hobby-photo"><img src="${h.img}" alt="${h.label}"></div>
+        <div class="hobby-badge">
+          <span class="hobby-badge-icon">${hobbyIcons[h.icon]}</span>
+          <span>${h.label}</span>
+        </div>
+        ${h.stat ? `<p class="hobby-stat">✦ ${h.stat}</p>` : ''}
+      </div>
+    `).join('') + `</div>`;
+  } else if(d.achievements){
+    bodyHtml = `<div class="award-grid">` + d.achievements.map((a,i) => `
+      <div class="award-card" style="--accent:var(--${a.color}); --accent-tint:var(--${a.color}-tint); animation-delay:${.1*i}s">
+        <div class="award-photo"><img src="${a.img}" alt="${a.label}"></div>
+        <p class="award-title">${a.label}</p>
+        ${a.desc ? `<p class="award-desc">${a.desc}</p>` : ''}
+      </div>
+    `).join('') + `</div>`;
   } else if(d.items){
     bodyHtml = `<ul class="info-list">` + d.items.map(([k,v],i) => `<li style="animation-delay:${.08*i}s"><b>${k}</b><span>${v}</span></li>`).join('') + `</ul>`;
   } else if(d.chips){
@@ -693,7 +1040,7 @@ function render(key){
     `;
   } else if(d.img){
     photoHtml = `<div class="photo-slot"><img src="${d.img}" alt="${d.title}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"></div>`;
-  } else if(!d.levels){
+  } else if(!d.levels && !d.skills && !d.hobbies && !d.achievements){
     photoHtml = `<div class="photo-slot">${iconSvg()}<span>${d.photoText}</span></div>`;
   }
 
@@ -709,6 +1056,9 @@ function render(key){
   `;
   if(key === 'award'){
     burstConfetti(page);
+  }
+  if(key === 'hobby'){
+    burstPlanes(page);
   }
   page.querySelectorAll('[data-flip]').forEach(card => {
     card.addEventListener('click', () => card.classList.toggle('flipped'));
